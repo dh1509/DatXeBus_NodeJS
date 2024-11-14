@@ -12,7 +12,7 @@ const authenticate = (req, res, next) => {
       res.status(401).send("Bạn Chưa Đăng Nhập");
     }
   } catch (error) {
-    res.status(401).send(error);
+    res.status(401).send("Token cua you dau?");
   }
 };
 

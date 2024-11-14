@@ -5,11 +5,13 @@ const jwt = require("jsonwebtoken");
 const register = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
   try {
+    //Tạo avatar mặc định
+    //const avatarUrl = gravatarUrl("ndhung159.work@gmail.com");
     // tạo ra một chuỗi ngẫu nhiên
     const salt = bcrypt.genSaltSync(10);
     // mã hóa salt + password
     const hashPassword = bcrypt.hashSync(password, salt);
-    const newUser = await User.create({ name, email, password : hashPassword ,phoneNumber});
+    const newUser = await User.create({ name, email, password : hashPassword ,phoneNumber /*, avatar : avatarUrl */});
     res.status(201).send(newUser);
   } catch (error) {
     res.status(500).send(error);
@@ -40,7 +42,20 @@ const login = async (req, res) => {
   }
 };
 
+const uploadAvatar = async (req , res) => {
+  const { file } = req;
+  const urlImage = `http://localhost:3000/${file.path}`;
+  const { user } = req;
+  const userFound = await User.findOne({
+    email: user.email,
+  });
+  userFound.avatar = urlImage;
+  await userFound.save();
+  res.send(userFound);
+}
+
 module.exports = {
   register,
   login,
+  uploadAvatar,
 };
